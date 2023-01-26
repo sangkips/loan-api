@@ -37,6 +37,7 @@ class Profile(models.Model):
     business_name = models.CharField(max_length=200)
     address = models.CharField(max_length=50)
     registered_company_number = models.CharField(
+        unique=True,
         max_length=8,
         validators=[
             RegexValidator(
@@ -48,7 +49,7 @@ class Profile(models.Model):
     # moneyField here handles the country's currency and improve on validations
     business_sector = models.CharField(max_length=30, choices=BUSINESS_SECTOR)
     amount_borrowed = MoneyField(
-        max_digits=10,
+        max_digits=19,
         decimal_places=2,
         validators=[MinMoneyValidator(10000), MaxMoneyValidator(100000)],
     )
@@ -56,5 +57,4 @@ class Profile(models.Model):
     reason_for_borrowing = models.TextField(help_text="Reasons for requesting a loan")
 
     def __str__(self):
-
         return self.business_name

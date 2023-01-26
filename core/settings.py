@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     # third party apps
     "djmoney",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
