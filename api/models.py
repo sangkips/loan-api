@@ -5,6 +5,12 @@ from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 from django.core.validators import RegexValidator
+from django.utils import timezone
+
+from .managers import CustomUserManager
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 BUSINESS_SECTOR = (
@@ -25,7 +31,9 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, unique=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "first_name", "last_name", "phone_number"]
+    REQUIRED_FIELDS = ["first_name", "last_name", "phone_number"]
+
+    objects = CustomUserManager()
 
     def __str__(self):
 
@@ -34,8 +42,28 @@ class CustomUser(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    business_name = models.CharField(max_length=200)
     address = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.user}"
+
+
+@receiver(post_save, sender=CustomUser)
+def create_user_profile(sender, created, instance, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=CustomUser)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+
+class LoanBook(models.Model):
+    owner = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
+    business_name = models.CharField(max_length=200)
     registered_company_number = models.CharField(
         unique=True,
         max_length=8,
@@ -49,12 +77,22 @@ class Profile(models.Model):
     # moneyField here handles the country's currency and improve on validations
     business_sector = models.CharField(max_length=30, choices=BUSINESS_SECTOR)
     amount_borrowed = MoneyField(
-        max_digits=19,
+        max_digits=10,
         decimal_places=2,
+        default_currency="KES",
         validators=[MinMoneyValidator(10000), MaxMoneyValidator(100000)],
     )
-    loan_duration = models.IntegerField(help_text="Duration in days")
+    loan_duration = models.CharField(
+        max_length=2,
+        validators=[
+            RegexValidator(
+                regex="\d{2}", message="Please specify duration in days", code="nomatch"
+            )
+        ],
+        help_text="Duration in days",
+        default=30,
+    )
     reason_for_borrowing = models.TextField(help_text="Reasons for requesting a loan")
 
     def __str__(self):
-        return self.business_name
+        return f"{self.owner}"

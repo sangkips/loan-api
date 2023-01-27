@@ -1,11 +1,7 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 
-from .models import CustomUser, Profile
-from .serializers import UserSerializer, ProfileSerializer
-
-
-# create uservieset that inherits from the ModelViewSet
+from .models import CustomUser, Profile, LoanBook
+from .serializers import UserSerializer, ProfileSerializer, LoanBookSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -16,3 +12,8 @@ class UserViewSet(viewsets.ModelViewSet):
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
+
+class UserLoanBookViewSet(viewsets.ModelViewSet):
+    queryset = LoanBook.objects.all()
+    serializer_class = LoanBookSerializer

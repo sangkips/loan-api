@@ -27,4 +27,4 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
-admin.site.register([Profile])
+admin.site.register([Profile, LoanBook])
