@@ -2,12 +2,10 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from djmoney.models.fields import MoneyField
-from djmoney.money import Money
 from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 from django.core.validators import RegexValidator
-from django.utils import timezone
+from phonenumber_field.modelfields import PhoneNumberField
 
-from .managers import CustomUserManager
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -26,14 +24,13 @@ class CustomUser(AbstractUser):
     AbstractUser allows us to use email and not username as the identifier
     """
 
-    # name = models.CharField(max_length=100)
     email = models.EmailField(max_length=50, unique=True)
-    phone_number = models.CharField(max_length=15, unique=True)
+    phone_number = PhoneNumberField(
+        unique=True, help_text="Start with your country code such as +254"
+    )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name", "phone_number"]
-
-    objects = CustomUserManager()
+    REQUIRED_FIELDS = ["username", "first_name", "last_name", "phone_number"]
 
     def __str__(self):
 
@@ -48,12 +45,14 @@ class Profile(models.Model):
         return f"{self.user}"
 
 
+# signal to create user profile
 @receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, created, instance, **kwargs):
     if created:
         Profile.objects.create(user=instance)
 
 
+# signal to save created user profile
 @receiver(post_save, sender=CustomUser)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
@@ -61,7 +60,10 @@ def save_user_profile(sender, instance, **kwargs):
 
 class LoanBook(models.Model):
     owner = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+        settings.AUTH_USER_MODEL,
+        related_name="loans",
+        on_delete=models.SET_NULL,
+        null=True,
     )
     business_name = models.CharField(max_length=200)
     registered_company_number = models.CharField(

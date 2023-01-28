@@ -1,19 +1,54 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
+from rest_framework import generics
 
 from .models import CustomUser, Profile, LoanBook
-from .serializers import UserSerializer, ProfileSerializer, LoanBookSerializer
+from .serializers import (
+    UserSerializer,
+    ProfileSerializer,
+    LoanBookSerializer,
+    RegisterUserSerializer,
+)
+
+from .permissions import IsOwnerOrReadOnly
 
 
-class UserViewSet(viewsets.ModelViewSet):
+# viewsets define views behaviour, viewSets provide .list() and .create() methods automatically
+# modelViewset provides .list(), .create(), .retrieve(), .partial_update() and .destroy() methods out of the box
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 
 
+class UserRegisterViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for user registration
+    """
+
+    queryset = CustomUser.objects.all()
+    serializer_class = RegisterUserSerializer
+    permission_classes = [
+        permissions.AllowAny,
+    ]
+
+
 class UserProfileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows user profile to be created viewd, edited or deleted depending
+    on the permission the user has.
+    """
+
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class UserLoanBookViewSet(viewsets.ModelViewSet):
+
+    permission_classes = []
     queryset = LoanBook.objects.all()
     serializer_class = LoanBookSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    # Associate loans with users
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
