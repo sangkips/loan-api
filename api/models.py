@@ -19,7 +19,7 @@ BUSINESS_SECTOR = (
 )
 
 
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     """
     AbstractUser allows us to use email and not username as the identifier
     """
@@ -46,14 +46,14 @@ class Profile(models.Model):
 
 
 # signal to create user profile
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=User)
 def create_user_profile(sender, created, instance, **kwargs):
     if created:
         Profile.objects.create(user=instance)
 
 
 # signal to save created user profile
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 

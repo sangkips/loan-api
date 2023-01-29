@@ -5,7 +5,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
 
-from .models import CustomUser, Profile, LoanBook
+from .models import User, Profile, LoanBook
 
 """ 
 Serializers allow complex data to be converted into native Python data types that can be rendered into JSON
@@ -15,7 +15,7 @@ ModelSerializers handle data validation automatically
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser
+        model = User
 
         fields = [
             "id",
@@ -34,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterUserSerializer(serializers.ModelSerializer):
 
     email = serializers.EmailField(
-        required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())]
+        required=True, validators=[UniqueValidator(queryset=User.objects.all())]
     )
     password = serializers.CharField(
         write_only=True, required=True, validators=[validate_password]
@@ -42,7 +42,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
-        model = CustomUser
+        model = User
 
         fields = [
             "id",
@@ -66,7 +66,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = CustomUser.objects.create(
+        user = User.objects.create(
             username=validated_data["username"],
             email=validated_data["email"],
             first_name=validated_data["first_name"],
