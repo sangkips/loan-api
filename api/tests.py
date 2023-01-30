@@ -21,8 +21,18 @@ class TestUserListTestCase(APITestCase):
             },
         )
 
+        response = self.client.post(
+            reverse("token_obtain_pair"),
+            {
+                "email": "admin@email.com",
+                "password": "password123",
+            },
+        )
+
+        print(response.data)
+
     def test_list_users(self):
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

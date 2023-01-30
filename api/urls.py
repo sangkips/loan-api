@@ -9,6 +9,7 @@ from .views import (
     UserRegisterViewSet,
     UserLoanBookViewSet,
     UserViewSet,
+    UserLoginViewset,
 )
 
 
@@ -20,6 +21,7 @@ router.register("users", UserViewSet, basename="user")
 router.register("profile", UserProfileViewSet, basename="profile")
 router.register("loan", UserLoanBookViewSet, basename="loan")
 router.register("register", UserRegisterViewSet, basename="register")
+router.register("login", UserLoginViewset, basename="login")
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions
-
+from rest_framework.response import Response
+from rest_framework.request import Request
 
 from .models import User, Profile, LoanBook
 from .serializers import (
@@ -7,8 +8,9 @@ from .serializers import (
     ProfileSerializer,
     LoanBookSerializer,
     RegisterUserSerializer,
+    LoginSerializer,
 )
-
+from .token import auth_token
 from .permissions import IsOwner
 
 
@@ -22,6 +24,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         serializer.save(owner=self.request.user)
 
 
+# User registration view
 class UserRegisterViewSet(viewsets.ModelViewSet):
     """
     API endpoint for user registration
@@ -34,6 +37,20 @@ class UserRegisterViewSet(viewsets.ModelViewSet):
     ]
 
 
+# Login view
+class UserLoginViewset(viewsets.ModelViewSet):
+    serializer_class = LoginSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        token = auth_token(user)
+        return Response({"token": token})
+
+
+# User Profile view
 class UserProfileViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows user profile to be created viewd, edited or deleted depending
@@ -45,7 +62,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
 
-# API endpoint for Loan creation
+# Loan View
 class UserLoanBookViewSet(viewsets.ModelViewSet):
 
     queryset = LoanBook.objects.all()

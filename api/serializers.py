@@ -1,6 +1,9 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
 
 from rest_framework.validators import UniqueValidator
+from rest_framework.response import Response
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
 from django.contrib.auth.password_validation import validate_password
 
@@ -76,6 +79,21 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+class LoginSerializer(serializers.ModelSerializer):
+    email = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ["email", "password"]
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Incorrect username or password")
 
 
 class ProfileSerializer(serializers.ModelSerializer):
