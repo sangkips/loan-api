@@ -1,6 +1,5 @@
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
-from rest_framework.request import Request
 
 from .models import User, Profile, LoanBook
 from .serializers import (
@@ -39,6 +38,7 @@ class UserRegisterViewSet(viewsets.ModelViewSet):
 
 # Login view
 class UserLoginViewset(viewsets.ModelViewSet):
+    queryset = User.objects.all()
     serializer_class = LoginSerializer
     permission_classes = [permissions.AllowAny]
 
