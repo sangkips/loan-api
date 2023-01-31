@@ -48,11 +48,11 @@ DATABASE_PORT=5432
 
 ### To use Phone Number field
 
-To use Phone Number field make sure you are starting with the coutry's prefix such as `(+1, for US, +254 for Kenya)`
+To use Phone Number field make sure you are starting with the coutry's prefix such as `(+1) for US, (+254) for Kenya)`
 
 ## Docker
 
-### To buld docker image
+### To buld Docker image
 
 In order to build the docker image use `make`
 
@@ -70,7 +70,7 @@ Run Docker container with the following command
 
 ## Running Django Application
 
-To run dajngo-related commands use the following
+To run Django-related commands use the following
 
 ### Make Migrations
 
