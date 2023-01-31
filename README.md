@@ -30,7 +30,7 @@ If you prefer postgreSQL over SQLite, you need to create a local database variab
 DATABASE_DB=dbname
 DATABASE_USER=dbuser
 DATABASE_PASSWORD=dbpassword
-DATABASE_HOST=localhost
+DATABASE_HOST=db
 DATABASE_PORT=5432
 ```
 
@@ -45,3 +45,42 @@ DATABASE_PORT=5432
 ### Start the server
 
 `python manage.py runserver`
+
+### To use Phone Number field
+
+To use Phone Number field make sure you are starting with the coutry's prefix such as `(+1, for US, +254 for Kenya)`
+
+## Docker
+
+### To buld docker image
+
+In order to build the docker image use `make`
+
+### To run the Docker container
+
+Run Docker container with the following command
+
+- `docker-compose up`
+
+- `-d` when you want to run in detached mode
+
+### Stop running container
+
+- `docker-compose stop`
+
+## Running Django Application
+
+To run dajngo-related commands use the following
+
+### Make Migrations
+
+- `docker-compose run app /usr/local/bin/python manage.py makemigrations`
+  `app` comes from docker-compose.yml file
+
+### Migrate
+
+- `docker-compose run app /usr/local/bin/python manage.py migrate`
+
+### Run server
+
+- `docker-compose run app /usr/local/bin/python manage.py createsuperuser`
