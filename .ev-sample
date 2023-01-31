@@ -1,3 +1,4 @@
+no spacing between the key and value
 SECRET_KEY = yourstrong455key
 
 
@@ -7,3 +8,4 @@ DATABASE_USER = dbuser
 DATABASE_PASSWORD = dbpassword
 DATABASE_HOST = localhost
 DATABASE_PORT = 5432
+

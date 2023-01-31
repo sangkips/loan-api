@@ -18,6 +18,7 @@ django-templated-mail==1.1.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==4.8.0
 exceptiongroup==1.1.0
+gunicorn==20.1.0
 idna==3.4
 iniconfig==2.0.0
 itypes==1.2.0
@@ -46,3 +47,4 @@ tomli==2.0.1
 typing_extensions==4.4.0
 uritemplate==4.1.1
 urllib3==1.26.14
+whitenoise==6.3.0

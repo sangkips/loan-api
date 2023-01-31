@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  app:
+    image: sangkips/loan-api:latest
+    working_dir: /usr/src/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    networks:
+      - loan_net
+
+  db:
+    image: postgres:15.1-alpine
+    volumes:
+      - loan_pg:/var/lib/postgressql/data
+    env_file:
+      - .env
+    networks:
+      - loan_net
+
+volumes:
+  loan_pg:
+  loan_app:
+
+networks:
+  loan_net:
