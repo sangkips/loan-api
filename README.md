@@ -75,12 +75,13 @@ To run Django-related commands use the following
 ### Make Migrations
 
 - `docker-compose run app /usr/local/bin/python manage.py makemigrations`
-  `app` comes from docker-compose.yml file
+
+* `app` comes from `docker-compose.yml` file
 
 ### Migrate
 
 - `docker-compose run app /usr/local/bin/python manage.py migrate`
 
-### Run server
+### Create Superuser Account
 
 - `docker-compose run app /usr/local/bin/python manage.py createsuperuser`
