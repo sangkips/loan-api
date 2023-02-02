@@ -1,7 +1,7 @@
-from rest_framework import serializers, status
+from rest_framework import serializers
 
 from rest_framework.validators import UniqueValidator
-from rest_framework.response import Response
+
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 
