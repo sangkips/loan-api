@@ -22,4 +22,5 @@ RUN python3 -m pip install -r requirements.txt --no-cache-dir
 # copy and mount the project to the current directory
 COPY . .
 
+# Script to run the api
 CMD ["./run.sh"]
